@@ -35,6 +35,8 @@
 #ifndef BLIS_PACK_H
 #define BLIS_PACK_H
 
+#ifndef BLIS_ENABLE_HPX
+
 void  bli_pack_init( void );
 void  bli_pack_finalize( void );
 
@@ -42,6 +44,8 @@ BLIS_EXPORT_BLIS void bli_pack_get_pack_a( bool* pack_a );
 BLIS_EXPORT_BLIS void bli_pack_get_pack_b( bool* pack_b );
 BLIS_EXPORT_BLIS void bli_pack_set_pack_a( bool pack_a );
 BLIS_EXPORT_BLIS void bli_pack_set_pack_b( bool pack_b );
+
+#endif
 
 void  bli_pack_init_rntm_from_env( rntm_t* rntm );
 

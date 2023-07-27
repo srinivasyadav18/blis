@@ -36,39 +36,8 @@
 #ifndef BLIS_L3_IND_H
 #define BLIS_L3_IND_H
 
-// -----------------------------------------------------------------------------
-
-#undef  GENPROT
-#define GENPROT( opname ) \
-\
-ind_t   PASTEMAC(opname,ind_find_avail)( num_t dt );
-/*bool PASTEMAC(opname,ind_has_avail)( num_t dt ); */
-
-GENPROT( gemm )
-GENPROT( gemmt )
-GENPROT( hemm )
-GENPROT( symm )
-GENPROT( trmm3 )
-GENPROT( trmm )
-GENPROT( trsm )
-
-// -----------------------------------------------------------------------------
-
-//bool bli_l3_ind_oper_is_avail( opid_t oper, ind_t method, num_t dt );
-
-ind_t   bli_l3_ind_oper_find_avail( opid_t oper, num_t dt );
-
-void    bli_l3_ind_set_enable_dt( ind_t method, num_t dt, bool status );
-
-void    bli_l3_ind_oper_enable_only( opid_t oper, ind_t method, num_t dt );
-
-void    bli_l3_ind_oper_set_enable_all( opid_t oper, num_t dt, bool status );
 #ifdef BLIS_ENABLE_HPX
 void    bli_l3_ind_oper_set_enable( opid_t oper, ind_t method, num_t dt, bool status );
 #endif
-
-bool    bli_l3_ind_oper_get_enable( opid_t oper, ind_t method, num_t dt );
-
-bool    bli_l3_ind_oper_is_impl( opid_t oper, ind_t method );
 
 #endif

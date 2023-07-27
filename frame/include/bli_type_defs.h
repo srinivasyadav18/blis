@@ -1032,8 +1032,8 @@ typedef struct
 } array_t;
 
 
+#ifndef BLIS_ENABLE_HPX
 // -- Locked pool-of-arrays-of-pools type --
-
 typedef struct
 {
 	bli_pthread_mutex_t mutex;
@@ -1042,6 +1042,7 @@ typedef struct
 	siz_t               def_array_len;
 
 } apool_t;
+#endif
 
 
 // -- packing block allocator: Locked set of pools type --

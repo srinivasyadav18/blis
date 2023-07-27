@@ -72,7 +72,7 @@ static arch_t cached_id = -1;
 arch_t bli_arch_query_id( void )
 {
 
-#ifdef BLIS_ENABLE_GKS_CACHING
+#if defined(BLIS_ENABLE_GKS_CACHING) && !defined(BLIS_ENABLE_HPX)
 
 	// Deep-query the arch_t id once via bli_pthread_once(). Since we are
 	// constrained by the pthread interface to pthread_once(), the id must be
@@ -94,14 +94,16 @@ arch_t bli_arch_query_id( void )
 
 // A pthread structure used in pthread_once(). pthread_once() is guaranteed to
 // execute exactly once among all threads that pass in this control object.
+#ifndef BLIS_ENABLE_HPX
 static bli_pthread_once_t once_id = BLIS_PTHREAD_ONCE_INIT;
+#endif
 
 void bli_arch_set_id_once( void )
 {
 	// When this file is being compiled as part of the configure script's
 	// hardware auto-detection driver, we avoid calling the bli_pthread APIs
 	// so that we aren't required to include those symbols in the executable.
-#ifndef BLIS_CONFIGURETIME_CPUID
+#if defined(BLIS_CONFIGURETIME_CPUID) && !defined(BLIS_ENABLE_HPX)
 	bli_pthread_once( &once_id, bli_arch_set_id );
 #endif
 }

@@ -128,12 +128,19 @@ extern "C" {
 #include "bli_mbool.h"
 #include "bli_cntx.h"
 #include "bli_rntm.h"
+#ifdef BLIS_ENABLE_HPX
+#include "bli_rntm_hpx.h"
+#endif
 #include "bli_gks.h"
 #include "bli_ind.h"
 #include "bli_pba.h"
 #include "bli_pool.h"
 #include "bli_array.h"
+#ifndef BLIS_ENABLE_HPX
 #include "bli_apool.h"
+#else
+#include "bli_apool_hpx.h"
+#endif
 #include "bli_sba.h"
 #include "bli_memsys.h"
 #include "bli_mem.h"
@@ -152,6 +159,9 @@ extern "C" {
 #include "bli_cntl.h"
 #include "bli_env.h"
 #include "bli_pack.h"
+#ifdef BLIS_ENABLE_HPX
+#include "bli_pack_hpx.h"
+#endif
 #include "bli_info.h"
 #include "bli_arch.h"
 #include "bli_cpuid.h"

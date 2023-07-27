@@ -304,7 +304,11 @@ BLIS_INLINE dim_t bli_rntm_calc_num_threads
 // -- Function prototypes ------------------------------------------------------
 //
 
+#ifndef BLIS_ENABLE_HPX
+
 BLIS_EXPORT_BLIS void bli_rntm_init_from_global( rntm_t* rntm );
+
+#endif
 
 BLIS_EXPORT_BLIS void bli_rntm_set_num_threads
      (

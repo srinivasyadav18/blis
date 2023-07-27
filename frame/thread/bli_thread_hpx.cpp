@@ -36,7 +36,7 @@
 
 #ifdef BLIS_ENABLE_HPX
 
-#include <hpx/local/execution.hpp>
+#include <hpx/execution.hpp>
 #include <hpx/parallel/algorithms/for_each.hpp>
 #include <hpx/hpx_start.hpp>
 
@@ -76,7 +76,7 @@ void bli_thread_initialize_hpx( int argc, char** argv )
 
 int bli_thread_finalize_hpx()
 {
-	hpx::apply([]() { hpx::finalize(); });
+	hpx::post([]() { hpx::finalize(); });
 	return hpx::stop();
 }
 

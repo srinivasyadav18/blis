@@ -35,8 +35,8 @@
 #ifndef BLIS_APOOL_H
 #define BLIS_APOOL_H
 
+#ifndef BLIS_ENABLE_HPX
 // -- Locked pool-of-arrays type --
-
 /*
 typedef struct
 {
@@ -47,7 +47,6 @@ typedef struct
 
 } apool_t;
 */
-
 
 // apool entry query
 
@@ -136,4 +135,4 @@ void bli_apool_free_block
 
 
 #endif
-
+#endif

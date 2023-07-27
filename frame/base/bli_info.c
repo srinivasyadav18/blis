@@ -118,7 +118,7 @@ gint_t bli_info_get_enable_openmp( void )
 }
 gint_t bli_info_get_enable_pthreads( void )
 {
-#ifdef BLIS_ENABLE_PTHREADS
+#if defined(BLIS_ENABLE_PTHREADS) && !defined(BLIS_ENABLE_HPX)
 	return 1;
 #else
 	return 0;
@@ -142,7 +142,7 @@ gint_t bli_info_get_enable_openmp_as_default( void )
 }
 gint_t bli_info_get_enable_pthreads_as_default( void )
 {
-#ifdef BLIS_ENABLE_PTHREADS_AS_DEFAULT
+#if defined(BLIS_ENABLE_PTHREADS_AS_DEFAULT) && !defined(BLIS_ENABLE_HPX)
 	return 1;
 #else
 	return 0;

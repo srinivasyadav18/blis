@@ -35,6 +35,8 @@
 
 #include "blis.h"
 
+#ifndef BLIS_ENABLE_HPX
+
 // The global rntm_t structure. (The definition resides in bli_rntm.c.)
 extern rntm_t global_rntm;
 
@@ -106,6 +108,8 @@ void bli_pack_set_pack_b( bool pack_b )
 	// Release the mutex protecting global_rntm.
 	bli_pthread_mutex_unlock( &global_rntm_mutex );
 }
+
+#endif
 
 // ----------------------------------------------------------------------------
 

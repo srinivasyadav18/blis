@@ -5,7 +5,8 @@
    libraries.
 
    Copyright (C) 2014, The University of Texas at Austin
-   Copyright (C) 2020, Advanced Micro Devices, Inc.
+   Copyright (C) 2016, Hewlett Packard Enterprise Development LP
+   Copyright (C) 2018 - 2019, Advanced Micro Devices, Inc.
 
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are
@@ -33,42 +34,52 @@
 
 */
 
-#ifndef BLIS_L3_IND_H
-#define BLIS_L3_IND_H
+#ifndef BLIS_RNTM_HPX_H
+#define BLIS_RNTM_HPX_H
 
-// -----------------------------------------------------------------------------
-
-#undef  GENPROT
-#define GENPROT( opname ) \
-\
-ind_t   PASTEMAC(opname,ind_find_avail)( num_t dt );
-/*bool PASTEMAC(opname,ind_has_avail)( num_t dt ); */
-
-GENPROT( gemm )
-GENPROT( gemmt )
-GENPROT( hemm )
-GENPROT( symm )
-GENPROT( trmm3 )
-GENPROT( trmm )
-GENPROT( trsm )
-
-// -----------------------------------------------------------------------------
-
-//bool bli_l3_ind_oper_is_avail( opid_t oper, ind_t method, num_t dt );
-
-ind_t   bli_l3_ind_oper_find_avail( opid_t oper, num_t dt );
-
-void    bli_l3_ind_set_enable_dt( ind_t method, num_t dt, bool status );
-
-void    bli_l3_ind_oper_enable_only( opid_t oper, ind_t method, num_t dt );
-
-void    bli_l3_ind_oper_set_enable_all( opid_t oper, num_t dt, bool status );
 #ifdef BLIS_ENABLE_HPX
-void    bli_l3_ind_oper_set_enable( opid_t oper, ind_t method, num_t dt, bool status );
+
+// Runtime object type (defined in bli_type_defs.h)
+
+/*
+typedef struct rntm_s
+{
+	timpl_t   thread_impl;
+
+	dim_t     num_threads;
+	dim_t     thrloop[ BLIS_NUM_LOOPS ];
+
+	bool      auto_factor;
+	bool      pack_a;
+	bool      pack_b;
+	bool      l3_sup;
+} rntm_t;
+*/
+
+//
+// -- rntm_t initialization ----------------------------------------------------
+//
+
+// NOTE: Initialization is not necessary as long the user calls at least ONE
+// of the public "set" accessors, each of which guarantees that the rntm_t
+// will be in a good state upon return.
+
+#define BLIS_RNTM_INITIALIZER \
+        { \
+          .thread_impl = BLIS_SINGLE, \
+          .num_threads = 1, \
+          .thrloop     = { 1, 1, 1, 1, 1, 1 }, \
+          .auto_factor = FALSE, \
+          .pack_a      = FALSE, \
+          .pack_b      = FALSE, \
+          .l3_sup      = TRUE, \
+        }  \
+
+//
+// -- Function prototypes ------------------------------------------------------
+//
+
+BLIS_EXPORT_BLIS void bli_rntm_init_from_global( rntm_t* rntm );
+
 #endif
-
-bool    bli_l3_ind_oper_get_enable( opid_t oper, ind_t method, num_t dt );
-
-bool    bli_l3_ind_oper_is_impl( opid_t oper, ind_t method );
-
 #endif

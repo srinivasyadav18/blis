@@ -34,6 +34,8 @@
 
 #include "blis.h"
 
+#ifndef BLIS_ENABLE_HPX
+
 // The global rntm_t structure, which holds the global thread settings
 // along with a few other key parameters.
 rntm_t global_rntm = BLIS_RNTM_INITIALIZER;
@@ -56,6 +58,8 @@ void bli_rntm_init_from_global( rntm_t* rntm )
 	// Release the mutex protecting global_rntm.
 	bli_pthread_mutex_unlock( &global_rntm_mutex );
 }
+
+#endif
 
 // -----------------------------------------------------------------------------
 

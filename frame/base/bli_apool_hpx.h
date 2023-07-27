@@ -4,7 +4,6 @@
    An object-based framework for developing high-performance BLAS-like
    libraries.
 
-   Copyright (C) 2014, The University of Texas at Austin
    Copyright (C) 2018 - 2019, Advanced Micro Devices, Inc.
 
    Redistribution and use in source and binary forms, with or without
@@ -33,77 +32,109 @@
 
 */
 
-#include "blis.h"
+#ifndef BLIS_APOOL_HPX_H
+#define BLIS_APOOL_HPX_H
+
+#ifdef BLIS_ENABLE_HPX
+// -- Locked pool-of-arrays type --
+
+#include <hpx/mutex.hpp>
+
+typedef struct
+{
+	hpx::spinlock mutex;
+	pool_t              pool;
+
+	siz_t               def_array_len;
+
+} apool_t;
+
+
+// apool entry query
+
+BLIS_INLINE pool_t* bli_apool_pool( apool_t* apool )
+{
+	return &(apool->pool);
+}
+
+BLIS_INLINE  hpx::spinlock* bli_apool_mutex( apool_t* apool )
+{
+	return &(apool->mutex);
+}
+
+BLIS_INLINE siz_t bli_apool_def_array_len( const apool_t* pool )
+{
+	return pool->def_array_len;
+}
+
+BLIS_INLINE bool bli_apool_is_exhausted( const apool_t* apool )
+{
+	return bli_pool_is_exhausted( &apool->pool );
+}
+
+// apool action
+
+BLIS_INLINE void bli_apool_lock( apool_t* apool )
+{
+        apool->mutex.lock();
+}
+
+BLIS_INLINE void bli_apool_unlock( apool_t* apool )
+{
+        apool->mutex.unlock();
+}
+
+// apool entry modification
+
+BLIS_INLINE void bli_apool_set_def_array_len( siz_t def_array_len, apool_t* pool ) \
+{
+	pool->def_array_len = def_array_len;
+}
 
 // -----------------------------------------------------------------------------
 
-void bli_init( void )
-{
-	bli_init_once();
-}
+void bli_apool_init
+     (
+       apool_t* apool
+     );
+void bli_apool_finalize
+     (
+       apool_t* apool
+     );
 
-void bli_finalize( void )
-{
-	bli_finalize_once();
-}
+array_t* bli_apool_checkout_array
+     (
+       siz_t    n_threads,
+       apool_t* apool
+     );
+void bli_apool_checkin_array
+     (
+       array_t* array,
+       apool_t* apool
+     );
 
-// -----------------------------------------------------------------------------
+pool_t* bli_apool_array_elem
+     (
+       siz_t    index,
+       array_t* array
+     );
 
-void bli_init_auto( void )
-{
-	bli_init_once();
-}
+void bli_apool_grow
+     (
+       siz_t    num_blocks_add,
+       apool_t* apool
+     );
 
-void bli_finalize_auto( void )
-{
-	// The _auto() functions are used when initializing the BLAS compatibility
-	// layer. It would not make much sense to automatically initialize and
-	// finalize for every BLAS routine call; therefore, we remain initialized
-	// unless and until the application explicitly calls bli_finalize().
-}
+void bli_apool_alloc_block
+     (
+       siz_t     num_elem,
+       array_t** array_p
+     );
+void bli_apool_free_block
+     (
+       array_t* array
+     );
 
-// -----------------------------------------------------------------------------
-#ifndef BLIS_ENABLE_HPX
-static bli_pthread_switch_t lib_state = BLIS_PTHREAD_SWITCH_INIT;
+
 #endif
-
-void bli_init_once( void )
-{
-#ifndef BLIS_ENABLE_HPX
-	bli_pthread_switch_on( &lib_state, bli_init_apis );
 #endif
-}
-
-void bli_finalize_once( void )
-{
-#ifndef BLIS_ENABLE_HPX
-	bli_pthread_switch_off( &lib_state, bli_finalize_apis );
-#endif
-}
-
-// -----------------------------------------------------------------------------
-
-int bli_init_apis( void )
-{
-	// Initialize various sub-APIs.
-	bli_gks_init();
-	bli_ind_init();
-	bli_thread_init();
-	bli_pack_init();
-	bli_memsys_init();
-
-	return 0;
-}
-
-int bli_finalize_apis( void )
-{
-	// Finalize various sub-APIs.
-	bli_memsys_finalize();
-	bli_pack_finalize();
-	bli_thread_finalize();
-	bli_ind_finalize();
-	bli_gks_finalize();
-
-	return 0;
-}
-

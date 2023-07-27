@@ -142,7 +142,7 @@ static integer c_n1 = -1;
 {
 #ifdef BLIS_ENABLE_HPX
     char* program = "cblat3";
-    bli_thread_initialize_hpx( 1, &program );
+    bli_thread_initialize_hpx( 0, &program );
 #endif
 
     /* Initialized data */

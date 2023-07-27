@@ -5,7 +5,6 @@
    libraries.
 
    Copyright (C) 2014, The University of Texas at Austin
-   Copyright (C) 2020, Advanced Micro Devices, Inc.
 
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are
@@ -33,42 +32,34 @@
 
 */
 
-#ifndef BLIS_L3_IND_H
-#define BLIS_L3_IND_H
+#include "blis.h"
 
-// -----------------------------------------------------------------------------
-
-#undef  GENPROT
-#define GENPROT( opname ) \
-\
-ind_t   PASTEMAC(opname,ind_find_avail)( num_t dt );
-/*bool PASTEMAC(opname,ind_has_avail)( num_t dt ); */
-
-GENPROT( gemm )
-GENPROT( gemmt )
-GENPROT( hemm )
-GENPROT( symm )
-GENPROT( trmm3 )
-GENPROT( trmm )
-GENPROT( trsm )
-
-// -----------------------------------------------------------------------------
-
-//bool bli_l3_ind_oper_is_avail( opid_t oper, ind_t method, num_t dt );
-
-ind_t   bli_l3_ind_oper_find_avail( opid_t oper, num_t dt );
-
-void    bli_l3_ind_set_enable_dt( ind_t method, num_t dt, bool status );
-
-void    bli_l3_ind_oper_enable_only( opid_t oper, ind_t method, num_t dt );
-
-void    bli_l3_ind_oper_set_enable_all( opid_t oper, num_t dt, bool status );
 #ifdef BLIS_ENABLE_HPX
-void    bli_l3_ind_oper_set_enable( opid_t oper, ind_t method, num_t dt, bool status );
-#endif
 
-bool    bli_l3_ind_oper_get_enable( opid_t oper, ind_t method, num_t dt );
+#include <hpx/mutex.hpp>
 
-bool    bli_l3_ind_oper_is_impl( opid_t oper, ind_t method );
+extern "C" {
+
+// The global rntm_t structure, which holds the global thread settings
+// along with a few other key parameters.
+rntm_t global_rntm = BLIS_RNTM_INITIALIZER;
+
+// A mutex to allow synchronous access to global_rntm.
+hpx::spinlock global_rntm_mutex;
+
+// -----------------------------------------------------------------------------
+
+void bli_rntm_init_from_global( rntm_t* rntm )
+{
+	// We must ensure that global_rntm has been initialized.
+	bli_init_once();
+
+	// Acquire the mutex protecting global_rntm.
+        std::lock_guard sl(global_rntm_mutex);
+
+	*rntm = global_rntm;
+}
+
+}
 
 #endif
