@@ -5,7 +5,7 @@
    libraries.
 
    Copyright (C) 2014, The University of Texas at Austin
-   Copyright (C) 2020, Advanced Micro Devices, Inc.
+   Copyright (C) 2018-2020, Advanced Micro Devices, Inc.
 
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are
@@ -33,17 +33,15 @@
 
 */
 
-#ifndef BLIS_L3_IND_HPX_H
-#define BLIS_L3_IND_HPX_H
+#include "blis.h"
+// -----------------------------------------------------------------------------
 
-#ifdef defined(__cplusplus) && defined(BLIS_ENABLE_HPX)
-
-extern "C" {
-
-void    bli_l3_ind_oper_set_enable( opid_t oper, ind_t method, num_t dt, bool status );
-
+// A mutex to allow synchronous access to the gks when it needs to be updated
+// with a new entry corresponding to a context for an ind_t value.
+#if defined(__cplusplus)
+#if defined(BLIS_WITH_HPX)
+extern "C"  {
+bli_pthread_mutex_t gks_mutex;
 }
-
 #endif
-
 #endif

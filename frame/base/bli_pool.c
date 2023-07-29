@@ -35,6 +35,125 @@
 
 #include "blis.h"
 
+void* bli_pblk_buf( const pblk_t* pblk )
+{
+	return pblk->buf;
+}
+
+void bli_pool_set_block_ptrs( void* block_ptrs, pool_t* pool )
+{
+       pool->block_ptrs = block_ptrs;
+}
+
+void bli_pool_set_block_ptrs_len( siz_t block_ptrs_len, pool_t* pool )
+{
+       pool->block_ptrs_len = block_ptrs_len;
+}
+
+void bli_pool_set_num_blocks( siz_t num_blocks, pool_t* pool )
+{
+       pool->num_blocks = num_blocks;
+}
+
+void bli_pool_set_block_size( siz_t block_size, pool_t* pool )
+{
+       pool->block_size = block_size;
+}
+
+siz_t bli_pblk_block_size( const pblk_t* pblk )
+{
+	return pblk->block_size;
+}
+
+// Pool block modification
+
+void bli_pblk_set_buf( void* buf, pblk_t* pblk )
+{
+	pblk->buf = buf;
+}
+
+void bli_pblk_set_block_size( siz_t block_size, pblk_t* pblk )
+{
+	pblk->block_size = block_size;
+}
+
+void* bli_pool_block_ptrs( const pool_t* pool )
+{
+	return pool->block_ptrs;
+}
+
+siz_t bli_pool_block_ptrs_len( const pool_t* pool )
+{
+	return pool->block_ptrs_len;
+}
+
+siz_t bli_pool_num_blocks( const pool_t* pool )
+{
+	return pool->num_blocks;
+}
+
+siz_t bli_pool_block_size( const pool_t* pool )
+{
+	return pool->block_size;
+}
+
+siz_t bli_pool_align_size( const pool_t* pool )
+{
+	return pool->align_size;
+}
+
+siz_t bli_pool_offset_size( const pool_t* pool )
+{
+	return pool->offset_size;
+}
+
+malloc_ft bli_pool_malloc_fp( const pool_t* pool )
+{
+	return pool->malloc_fp;
+}
+
+free_ft bli_pool_free_fp( const pool_t* pool )
+{
+	return pool->free_fp;
+}
+
+siz_t bli_pool_top_index( const pool_t* pool )
+{
+	return pool->top_index;
+}
+
+bool bli_pool_is_exhausted( const pool_t* pool )
+{
+	return ( bool )
+	       ( bli_pool_top_index( pool ) == bli_pool_num_blocks( pool ) );
+}
+
+
+void bli_pool_set_align_size( siz_t align_size, pool_t* pool )
+{
+       pool->align_size = align_size;
+}
+
+void bli_pool_set_offset_size( siz_t offset_size, pool_t* pool )
+{
+       pool->offset_size = offset_size;
+}
+
+void bli_pool_set_malloc_fp( malloc_ft malloc_fp, pool_t* pool )
+{
+       pool->malloc_fp = malloc_fp;
+}
+
+void bli_pool_set_free_fp( free_ft free_fp, pool_t* pool )
+{
+       pool->free_fp = free_fp;
+}
+
+void bli_pool_set_top_index( siz_t top_index, pool_t* pool )
+{
+       pool->top_index = top_index;
+}
+
 //#define BLIS_ENABLE_MEM_TRACING
 
 void bli_pool_init

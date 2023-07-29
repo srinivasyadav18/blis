@@ -77,7 +77,12 @@ int main( int argc, char** argv )
     double dtime_save;
     double gflops;
 
+#ifdef BLIS_ENABLE_HPX
+	bli_thread_initialize_hpx( argc, argv );
+#else
     bli_init();
+#endif
+
 
     n_repeats = 3;
 
@@ -287,7 +292,12 @@ int main( int argc, char** argv )
         bli_obj_free( &y_save );
     }
 
+
+#ifdef BLIS_ENABLE_HPX
+        return bli_thread_finalize_hpx();
+#else
     bli_finalize();
 
     return 0;
+#endif
 }

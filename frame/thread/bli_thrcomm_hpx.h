@@ -36,11 +36,19 @@
 #define BLIS_THRCOMM_HPX_H
 
 // Define these prototypes for situations when HPX multithreading is enabled.
-#ifdef BLIS_ENABLE_HPX
+#if defined(BLIS_ENABLE_HPX)
+
+#if defined(__cplusplus) 
+extern "C" {
+#endif
 
 void bli_thrcomm_init_hpx( dim_t nt, thrcomm_t* comm );
 void bli_thrcomm_cleanup_hpx( thrcomm_t* comm );
 void bli_thrcomm_barrier_hpx( dim_t tid, thrcomm_t* comm );
+
+#if defined(__cplusplus) 
+}
+#endif
 
 #endif
 

@@ -34,6 +34,51 @@
 
 #include "blis.h"
 
+#if !defined(BLIS_ENABLE_HPX)
+
+pool_t* bli_apool_pool( apool_t* apool )
+{
+	return &(apool->pool);
+}
+
+bli_pthread_mutex_t* bli_apool_mutex( apool_t* apool )
+{
+	return &(apool->mutex);
+}
+
+siz_t bli_apool_def_array_len( const apool_t* pool )
+{
+	return pool->def_array_len;
+}
+
+bool bli_apool_is_exhausted( const apool_t* apool )
+{
+	return bli_pool_is_exhausted( &apool->pool );
+}
+
+// apool entry modification
+
+void bli_apool_set_def_array_len( siz_t def_array_len, apool_t* pool ) \
+{
+	pool->def_array_len = def_array_len;
+}
+
+#endif
+
+// apool action
+
+void bli_apool_lock( apool_t* apool )
+{
+	bli_pthread_mutex_lock( bli_apool_mutex( apool ) );
+}
+
+void bli_apool_unlock( apool_t* apool )
+{
+	bli_pthread_mutex_unlock( bli_apool_mutex( apool ) );
+}
+
+#if !defined(BLIS_ENABLE_HPX)
+
 void bli_apool_init
      (
        apool_t* apool
@@ -136,6 +181,8 @@ void bli_apool_init
 	bli_pool_set_malloc_fp( NULL, pool );
 	bli_pool_set_free_fp( NULL, pool );
 }
+
+#endif
 
 void bli_apool_alloc_block
      (

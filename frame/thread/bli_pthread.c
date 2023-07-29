@@ -36,7 +36,7 @@
 
 #include "blis.h"
 
-#if defined(BLIS_DISABLE_SYSTEM)
+#if defined(BLIS_DISABLE_SYSTEM) && !defined(BLIS_ENABLE_HPX)
 
 // This branch defines a pthread-like API, bli_pthread_*(), and implements it
 // in terms of "dummy" code that doesn't depend on POSIX threads or any other
@@ -202,7 +202,7 @@ int bli_pthread_equal
 }
 #endif
 
-#elif defined(_MSC_VER) // !defined(BLIS_DISABLE_SYSTEM)
+#elif defined(_MSC_VER) && !defined(BLIS_ENABLE_HPX) // !defined(BLIS_DISABLE_SYSTEM)
 
 #include <errno.h>
 
@@ -406,7 +406,7 @@ int bli_pthread_equal
 }
 #endif
 
-#else // !defined(BLIS_DISABLE_SYSTEM) && !defined(_MSC_VER)
+#elif !defined(BLIS_ENABLE_HPX) // !defined(BLIS_DISABLE_SYSTEM) && !defined(_MSC_VER)
 
 // This branch defines a pthreads-like API, bli_pthreads_*(), and implements it
 // in terms of the corresponding pthreads_*() types, macros, and function calls. 
@@ -594,7 +594,7 @@ int bli_pthread_barrier_wait
 	return 0;
 }
 
-#elif defined(__APPLE__) || defined(_MSC_VER) // !defined(BLIS_DISABLE_SYSTEM)
+#elif !defined(BLIS_ENABLE_HPX) && defined(__APPLE__) || defined(_MSC_VER) // !defined(BLIS_DISABLE_SYSTEM)
 
 #include <errno.h>
 
@@ -659,7 +659,7 @@ int bli_pthread_barrier_wait
 	}
 }
 
-#else // !defined(BLIS_DISABLE_SYSTEM) && !defined(__APPLE__) && !defined(_MSC_VER)
+#elif !defined(BLIS_ENABLE_HPX) // !defined(BLIS_DISABLE_SYSTEM) && !defined(__APPLE__) && !defined(_MSC_VER)
 
 // Linux environments implement the pthread_barrier* sub-API. So, if we're
 // on Linux, we can simply call those functions, just as we did before for
@@ -693,6 +693,7 @@ int bli_pthread_barrier_wait
 
 #endif
 
+#if !defined(BLIS_ENABLE_HPX)
 // -- Non-standard extensions --------------------------------------------------
 
 // -- pthread_switch --
@@ -807,3 +808,4 @@ int bli_pthread_switch_off
 	return r_val;
 }
 
+#endif

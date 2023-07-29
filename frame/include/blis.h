@@ -109,6 +109,9 @@ extern "C" {
 #include "bli_thread_range_tlb.h"
 
 #include "bli_pthread.h"
+#if defined(BLIS_ENABLE_HPX)
+#include "bli_pthread_hpx.h"
+#endif
 
 
 // -- Constant definitions --
@@ -136,10 +139,10 @@ extern "C" {
 #include "bli_pba.h"
 #include "bli_pool.h"
 #include "bli_array.h"
-#ifndef BLIS_ENABLE_HPX
-#include "bli_apool.h"
-#else
+#ifdef BLIS_ENABLE_HPX
 #include "bli_apool_hpx.h"
+#else
+#include "bli_apool.h"
 #endif
 #include "bli_sba.h"
 #include "bli_memsys.h"

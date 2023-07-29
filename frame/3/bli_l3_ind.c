@@ -191,7 +191,7 @@ void bli_l3_ind_oper_set_enable_all( opid_t oper, num_t dt, bool status )
 
 // -----------------------------------------------------------------------------
 
-#ifndef BLIS_ENABLE_HPX
+#if !defined(BLIS_ENABLE_HPX)
 
 // A mutex to allow synchronous access to the bli_l3_ind_oper_st array.
 static bli_pthread_mutex_t oper_st_mutex = BLIS_PTHREAD_MUTEX_INITIALIZER;

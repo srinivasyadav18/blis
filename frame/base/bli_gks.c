@@ -615,7 +615,12 @@ const cntx_t* bli_gks_query_ind_cntx_noinit
 
 // A mutex to allow synchronous access to the gks when it needs to be updated
 // with a new entry corresponding to a context for an ind_t value.
-static bli_pthread_mutex_t gks_mutex = BLIS_PTHREAD_MUTEX_INITIALIZER;
+
+#if defined(BLIS_ENABLE_HPX)
+extern bli_pthread_mutex_t gks_mutex;
+#else
+bli_pthread_mutex_t gks_mutex = BLIS_PTHREAD_MUTEX_INITIALIZER
+#endif
 
 const cntx_t* bli_gks_query_ind_cntx_impl
      (

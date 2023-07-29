@@ -53,7 +53,6 @@ typedef struct pba_s
 } pba_t;
 */
 
-
 // pba init
 
 //BLIS_INLINE void bli_pba_init_mutex( pba_t* pba )
@@ -68,54 +67,27 @@ typedef struct pba_s
 
 // pba query
 
-BLIS_INLINE pool_t* bli_pba_pool( dim_t pool_index, pba_t* pba )
-{
-	return &(pba->pools[ pool_index ]);
-}
+pool_t* bli_pba_pool( dim_t pool_index, pba_t* pba );
 
-BLIS_INLINE siz_t bli_pba_align_size( const pba_t* pba )
-{
-	return pba->align_size;
-}
+siz_t bli_pba_align_size( const pba_t* pba );
 
-BLIS_INLINE malloc_ft bli_pba_malloc_fp( const pba_t* pba )
-{
-	return pba->malloc_fp;
-}
+malloc_ft bli_pba_malloc_fp( const pba_t* pba );
 
-BLIS_INLINE free_ft bli_pba_free_fp( const pba_t* pba )
-{
-	return pba->free_fp;
-}
+free_ft bli_pba_free_fp( const pba_t* pba );
 
 // pba modification
 
-BLIS_INLINE void bli_pba_set_align_size( siz_t align_size, pba_t* pba )
-{
-	pba->align_size = align_size;
-}
+void bli_pba_set_align_size( siz_t align_size, pba_t* pba );
 
-BLIS_INLINE void bli_pba_set_malloc_fp( malloc_ft malloc_fp, pba_t* pba )
-{
-	pba->malloc_fp = malloc_fp;
-}
+void bli_pba_set_malloc_fp( malloc_ft malloc_fp, pba_t* pba );
 
-BLIS_INLINE void bli_pba_set_free_fp( free_ft free_fp, pba_t* pba )
-{
-	pba->free_fp = free_fp;
-}
+void bli_pba_set_free_fp( free_ft free_fp, pba_t* pba );
 
 // pba action
 
-BLIS_INLINE void bli_pba_lock( pba_t* pba )
-{
-	bli_pthread_mutex_lock( &(pba->mutex) );
-}
+void bli_pba_lock( pba_t* pba );
 
-BLIS_INLINE void bli_pba_unlock( pba_t* pba )
-{
-	bli_pthread_mutex_unlock( &(pba->mutex) );
-}
+void bli_pba_unlock( pba_t* pba );
 
 // -----------------------------------------------------------------------------
 

@@ -5,7 +5,8 @@
    libraries.
 
    Copyright (C) 2014, The University of Texas at Austin
-   Copyright (C) 2020, Advanced Micro Devices, Inc.
+   Copyright (C) 2016, Hewlett Packard Enterprise Development LP
+   Copyright (C) 2018 - 2019, Advanced Micro Devices, Inc.
 
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are
@@ -33,17 +34,99 @@
 
 */
 
-#ifndef BLIS_L3_IND_HPX_H
-#define BLIS_L3_IND_HPX_H
+#include "blis.h"
 
-#ifdef defined(__cplusplus) && defined(BLIS_ENABLE_HPX)
+#if defined(__cplusplus) && defined(BLIS_ENABLE_HPX)
+
+#include<memory>
+#include <hpx/mutex.hpp>
 
 extern "C" {
 
-void    bli_l3_ind_oper_set_enable( opid_t oper, ind_t method, num_t dt, bool status );
+struct bli_pthread_mutex_ {
+    hpx::spinlock m;
+};
 
+struct pool_
+{
+	void*     block_ptrs;
+	dim_t     block_ptrs_len;
+
+	dim_t     top_index;
+	dim_t     num_blocks;
+
+	siz_t     block_size;
+	siz_t     align_size;
+	siz_t     offset_size;
+
+	malloc_ft malloc_fp;
+	free_ft   free_fp;
+
+};
+
+struct pba_s
+{
+	pool_t              pools[3];
+	std::shared_ptr<bli_pthread_mutex_t> mutex;
+
+	// These fields are used for general-purpose allocation.
+	siz_t               align_size;
+	malloc_ft           malloc_fp;
+	free_ft             free_fp;
+
+};
+
+static pba_t global_pba{.mutex=std::make_shared<bli_pthread_mutex_t>()};
+
+pool_t* bli_pba_pool( dim_t pool_index, pba_t* pba )
+{
+	return &(pba->pools[ pool_index ]);
 }
 
-#endif
+siz_t bli_pba_align_size( const pba_t* pba )
+{
+	return pba->align_size;
+}
+
+malloc_ft bli_pba_malloc_fp( const pba_t* pba )
+{
+	return pba->malloc_fp;
+}
+
+free_ft bli_pba_free_fp( const pba_t* pba )
+{
+	return pba->free_fp;
+}
+
+// pba modification
+
+void bli_pba_set_align_size( siz_t align_size, pba_t* pba )
+{
+	pba->align_size = align_size;
+}
+
+void bli_pba_set_malloc_fp( malloc_ft malloc_fp, pba_t* pba )
+{
+	pba->malloc_fp = malloc_fp;
+}
+
+void bli_pba_set_free_fp( free_ft free_fp, pba_t* pba )
+{
+	pba->free_fp = free_fp;
+}
+
+// pba action
+
+void bli_pba_lock( pba_t* pba )
+{
+	bli_pthread_mutex_lock( pba->mutex.get() );
+}
+
+void bli_pba_unlock( pba_t* pba )
+{
+	bli_pthread_mutex_unlock( pba->mutex.get() );
+}
+
+}
 
 #endif

@@ -35,61 +35,31 @@
 #ifndef BLIS_APOOL_HPX_H
 #define BLIS_APOOL_HPX_H
 
-#ifdef BLIS_ENABLE_HPX
-// -- Locked pool-of-arrays type --
+#if defined(BLIS_ENABLE_HPX)
 
-#include <hpx/mutex.hpp>
-
-typedef struct
-{
-	hpx::spinlock mutex;
-	pool_t              pool;
-
-	siz_t               def_array_len;
-
-} apool_t;
-
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 // apool entry query
 
-BLIS_INLINE pool_t* bli_apool_pool( apool_t* apool )
-{
-	return &(apool->pool);
-}
+pool_t* bli_apool_pool( apool_t* apool );
 
-BLIS_INLINE  hpx::spinlock* bli_apool_mutex( apool_t* apool )
-{
-	return &(apool->mutex);
-}
+bli_pthread_mutex_t* bli_apool_mutex( apool_t* apool );
 
-BLIS_INLINE siz_t bli_apool_def_array_len( const apool_t* pool )
-{
-	return pool->def_array_len;
-}
+siz_t bli_apool_def_array_len( const apool_t* pool );
 
-BLIS_INLINE bool bli_apool_is_exhausted( const apool_t* apool )
-{
-	return bli_pool_is_exhausted( &apool->pool );
-}
+bool bli_apool_is_exhausted( const apool_t* apool );
 
 // apool action
 
-BLIS_INLINE void bli_apool_lock( apool_t* apool )
-{
-        apool->mutex.lock();
-}
+void bli_apool_lock( apool_t* apool );
 
-BLIS_INLINE void bli_apool_unlock( apool_t* apool )
-{
-        apool->mutex.unlock();
-}
+void bli_apool_unlock( apool_t* apool );
 
 // apool entry modification
 
-BLIS_INLINE void bli_apool_set_def_array_len( siz_t def_array_len, apool_t* pool ) \
-{
-	pool->def_array_len = def_array_len;
-}
+void bli_apool_set_def_array_len( siz_t def_array_len, apool_t* pool );
 
 // -----------------------------------------------------------------------------
 
@@ -135,6 +105,10 @@ void bli_apool_free_block
        array_t* array
      );
 
+#if defined(__cplusplus)
+}
+#endif
 
 #endif
+
 #endif

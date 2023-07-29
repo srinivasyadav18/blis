@@ -92,6 +92,10 @@ int main( int argc, char** argv )
     FILE* fin = NULL;
     FILE* fout = NULL;
 
+#ifdef BLIS_ENABLE_HPX
+	bli_thread_initialize_hpx( argc, argv );
+#endif
+
     if(argc < 3)
     {
         printf("Usage: ./test_gemm_batch_XX.x input.csv output.csv\n");
@@ -579,6 +583,11 @@ int main( int argc, char** argv )
     fclose(fin);
     fclose(fout);
 #endif
+
+#ifdef BLIS_ENABLE_HPX
+        return bli_thread_finalize_hpx();
+#else
     return 0;
+#endif
 }
 

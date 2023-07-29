@@ -85,8 +85,11 @@ int main( int argc, char** argv )
 	double dtime_save;
 	double gbps;
 
+#ifdef BLIS_ENABLE_HPX
+	bli_thread_initialize_hpx( argc, argv );
+#else
 	//bli_init();
-
+#endif
 	n_repeats = 100000;
 
 #ifndef PRINT
@@ -212,7 +215,11 @@ int main( int argc, char** argv )
 		bli_obj_free( &y );
 	}
 
+#ifdef BLIS_ENABLE_HPX
+        return bli_thread_finalize_hpx();
+#else
 	//bli_finalize();
 
 	return 0;
+#endif
 }

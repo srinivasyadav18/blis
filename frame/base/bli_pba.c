@@ -36,8 +36,64 @@
 
 #include "blis.h"
 
+#if !defined(BLIS_ENABLE_HPX)
+
 // Statically initialize the mutex within the packing block allocator object.
 static pba_t global_pba = { .mutex = BLIS_PTHREAD_MUTEX_INITIALIZER };
+
+pool_t* bli_pba_pool( dim_t pool_index, pba_t* pba )
+{
+	return &(pba->pools[ pool_index ]);
+}
+
+siz_t bli_pba_align_size( const pba_t* pba )
+{
+	return pba->align_size;
+}
+
+malloc_ft bli_pba_malloc_fp( const pba_t* pba )
+{
+	return pba->malloc_fp;
+}
+
+free_ft bli_pba_free_fp( const pba_t* pba )
+{
+	return pba->free_fp;
+}
+
+// pba modification
+
+void bli_pba_set_align_size( siz_t align_size, pba_t* pba )
+{
+	pba->align_size = align_size;
+}
+
+void bli_pba_set_malloc_fp( malloc_ft malloc_fp, pba_t* pba )
+{
+	pba->malloc_fp = malloc_fp;
+}
+
+void bli_pba_set_free_fp( free_ft free_fp, pba_t* pba )
+{
+	pba->free_fp = free_fp;
+}
+
+// pba action
+
+void bli_pba_lock( pba_t* pba )
+{
+	bli_pthread_mutex_lock( &(pba->mutex) );
+}
+
+void bli_pba_unlock( pba_t* pba )
+{
+	bli_pthread_mutex_unlock( &(pba->mutex) );
+}
+#else
+
+extern pba_t global_pba;
+
+#endif
 
 // -----------------------------------------------------------------------------
 

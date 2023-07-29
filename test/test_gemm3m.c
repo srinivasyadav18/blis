@@ -68,8 +68,12 @@ int main( int argc, char** argv )
 	FILE* fin  = NULL;
 	FILE* fout = NULL;
 #endif
+#ifdef BLIS_ENABLE_HPX
+	bli_thread_initialize_hpx( argc, argv );
+#else
 	//bli_init();
 	//bli_error_checking_level_set( BLIS_NO_ERROR_CHECKING );
+#endif
 
 	n_repeats = 3;
 
@@ -343,10 +347,14 @@ int main( int argc, char** argv )
 		bli_obj_free( &c_save );
 	}
 
+#ifdef BLIS_ENABLE_HPX
+        return bli_thread_finalize_hpx();
+#else
 	//bli_finalize();
 #ifdef FILE_IN_OUT
 	fclose( fin );
 	fclose( fout );
 #endif
 	return 0;
+#endif
 }

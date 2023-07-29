@@ -35,9 +35,10 @@
 
 #include "blis.h"
 
-#ifdef BLIS_ENABLE_HPX
+#if defined(BLIS_ENABLE_HPX)
 
 #include <hpx/mutex.hpp>
+#include <hpx/thread.hpp>
 
 //
 // NOTE: "2" is used instead of BLIS_NUM_FP_TYPES/2.
@@ -59,9 +60,15 @@ bool bli_l3_ind_oper_st[BLIS_NUM_IND_METHODS][BLIS_NUM_LEVEL3_OPS][2] =
              {TRUE,TRUE},   {TRUE,TRUE},   {TRUE,TRUE},   {TRUE,TRUE},   {TRUE,TRUE}    },
 };
 
-extern "C" {
+struct bli_pthread_mutex_ {
+    hpx::spinlock m;
+};
 
-static hpx::spinlock oper_st_mutex;
+static bli_pthread_mutex_t oper_st_mutex;
+
+#if defined(__cplusplus) 
+extern "C" {
+#endif
 
 void bli_l3_ind_oper_set_enable( opid_t oper, ind_t method, num_t dt, bool status )
 {
@@ -88,7 +95,7 @@ void bli_l3_ind_oper_set_enable( opid_t oper, ind_t method, num_t dt, bool statu
 	idt = bli_ind_map_cdt_to_index( dt );
 
 	// Acquire the mutex protecting bli_l3_ind_oper_st.
-        std::lock_guard sl(oper_st_mutex);
+        std::lock_guard sl(oper_st_mutex.m);
 
 	// BEGIN CRITICAL SECTION
 	{
@@ -97,6 +104,8 @@ void bli_l3_ind_oper_set_enable( opid_t oper, ind_t method, num_t dt, bool statu
 	// END CRITICAL SECTION
 }
 
+#if defined(__cplusplus) 
 }
+#endif
 
 #endif

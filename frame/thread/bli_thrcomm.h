@@ -131,16 +131,14 @@ typedef struct thrcomm_s
 
 } thrcomm_t;
 
-
-
-
-
 // Include definitions (mostly thrcomm_t) specific to the method of
 // multithreading.
 #include "bli_thrcomm_single.h"
 #include "bli_thrcomm_openmp.h"
 #include "bli_thrcomm_pthreads.h"
+#if defined(BLIS_ENABLE_HPX)
 #include "bli_thrcomm_hpx.h"
+#endif
 
 // Define a function pointer type for each of the functions that are
 // "overloaded" by each method of multithreading.

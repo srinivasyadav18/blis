@@ -49,14 +49,12 @@
 // -- pthread types --
 
 typedef int bli_pthread_t;
-typedef int bli_pthread_attr_t;
 typedef int bli_pthread_mutex_t;
-typedef int bli_pthread_mutexattr_t;
 typedef int bli_pthread_cond_t;
-typedef int bli_pthread_condattr_t;
 typedef int bli_pthread_once_t;
-
 typedef int bli_pthread_barrier_t;
+typedef int bli_pthread_mutexattr_t;
+typedef int bli_pthread_condattr_t;
 typedef int bli_pthread_barrierattr_t;
 
 // -- pthreads macros --
@@ -64,6 +62,32 @@ typedef int bli_pthread_barrierattr_t;
 #define BLIS_PTHREAD_MUTEX_INITIALIZER 0
 #define BLIS_PTHREAD_COND_INITIALIZER  0
 #define BLIS_PTHREAD_ONCE_INIT         0
+
+#elif defined(BLIS_ENABLE_HPX)
+
+struct bli_pthread_;
+struct bli_pthread_mutex_;
+struct bli_pthread_cond_;
+struct bli_pthread_once_;
+struct bli_pthread_barrier_;
+
+typedef struct bli_pthread_ bli_pthread_t;
+typedef struct bli_pthread_mutex_ bli_pthread_mutex_t;
+typedef struct bli_pthread_cond_ bli_pthread_cond_t;
+typedef struct bli_pthread_once_ bli_pthread_once_t;
+typedef struct bli_pthread_barrier_ bli_pthread_barrier_t;
+
+typedef int bli_pthread_attr_t;
+typedef int bli_pthread_mutexattr_t;
+typedef int bli_pthread_condattr_t;
+typedef int bli_pthread_barrierattr_t;
+
+// -- pthreads macros --
+
+#define BLIS_PTHREAD_MUTEX_INITIALIZER 0
+#define BLIS_PTHREAD_COND_INITIALIZER  0
+#define BLIS_PTHREAD_ONCE_INIT         0
+
 
 #elif defined(_MSC_VER) // !defined(BLIS_DISABLE_SYSTEM)
 
@@ -98,7 +122,7 @@ typedef void bli_pthread_barrierattr_t;
 #define BLIS_PTHREAD_ONCE_INIT         INIT_ONCE_STATIC_INIT
 #define BLIS_PTHREAD_COND_INITIALIZER  CONDITION_VARIABLE_INIT
 
-#else // !defined(BLIS_DISABLE_SYSTEM) && !defined(_MSC_VER)
+#elif // !defined(BLIS_DISABLE_SYSTEM) && !defined(_MSC_VER)
 
 #include <pthread.h>
 
@@ -108,12 +132,13 @@ typedef void bli_pthread_barrierattr_t;
 // -- pthread types --
 
 typedef pthread_t           bli_pthread_t;
-typedef pthread_attr_t      bli_pthread_attr_t;
 typedef pthread_mutex_t     bli_pthread_mutex_t;
-typedef pthread_mutexattr_t bli_pthread_mutexattr_t;
 typedef pthread_cond_t      bli_pthread_cond_t;
-typedef pthread_condattr_t  bli_pthread_condattr_t;
 typedef pthread_once_t      bli_pthread_once_t;
+
+typedef pthread_attr_t      bli_pthread_attr_t;
+typedef pthread_mutexattr_t bli_pthread_mutexattr_t;
+typedef pthread_condattr_t  bli_pthread_condattr_t;
 
 #if defined(__APPLE__)
 
@@ -274,6 +299,7 @@ BLIS_EXPORT_BLIS int bli_pthread_barrier_wait
 
 // -- pthread_switch --
 
+#if !defined(BLIS_ENABLE_HPX)
 typedef struct
 {
     int                 status;
@@ -282,6 +308,11 @@ typedef struct
 
 #define BLIS_PTHREAD_SWITCH_INIT { .status = 0, \
                                    .mutex  = BLIS_PTHREAD_MUTEX_INITIALIZER }
+
+#else
+struct bli_pthread_switch_;
+typedef struct bli_pthread_switch_ bli_pthread_switch_t;
+#endif
 
 int bli_pthread_switch_on
      (

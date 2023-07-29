@@ -71,6 +71,7 @@
 // configure-time (and explicit or automatic selection of 64 bits is fine
 // and would have had the same result).
 #if BLIS_BLAS_INT_TYPE_SIZE == 64
+}
   #undef  BLIS_INT_TYPE_SIZE
   #define BLIS_INT_TYPE_SIZE 64
 #endif
@@ -1019,7 +1020,6 @@ typedef struct
 
 } pool_t;
 
-
 // -- Array type --
 
 typedef struct
@@ -1033,6 +1033,7 @@ typedef struct
 
 
 #ifndef BLIS_ENABLE_HPX
+
 // -- Locked pool-of-arrays-of-pools type --
 typedef struct
 {
@@ -1042,11 +1043,8 @@ typedef struct
 	siz_t               def_array_len;
 
 } apool_t;
-#endif
-
 
 // -- packing block allocator: Locked set of pools type --
-
 typedef struct pba_s
 {
 	pool_t              pools[3];
@@ -1058,6 +1056,13 @@ typedef struct pba_s
 	free_ft             free_fp;
 
 } pba_t;
+#else
+struct apool_;
+typedef struct apool_ apool_t;
+
+struct pba_s;
+typedef struct pba_s pba_t;
+#endif
 
 
 // -- Memory object type --
