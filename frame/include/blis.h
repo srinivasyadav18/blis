@@ -113,7 +113,6 @@ extern "C" {
 #include "bli_pthread_hpx.h"
 #endif
 
-
 // -- Constant definitions --
 
 #include "bli_extern_defs.h"
@@ -130,10 +129,12 @@ extern "C" {
 #include "bli_func.h"
 #include "bli_mbool.h"
 #include "bli_cntx.h"
-#include "bli_rntm.h"
-#ifdef BLIS_ENABLE_HPX
+
+#if defined(BLIS_ENABLE_HPX)
 #include "bli_rntm_hpx.h"
 #endif
+
+#include "bli_rntm.h"
 #include "bli_gks.h"
 #include "bli_ind.h"
 #include "bli_pba.h"

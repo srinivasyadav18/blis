@@ -32,6 +32,10 @@
 
 */
 
+#if defined(BLIS_ENABLE_HPX)
+bli_pthread_mutex_t * get_gks_mutex_ptr();
+#endif
+
 #ifndef BLIS_GKS_H
 #define BLIS_GKS_H
 

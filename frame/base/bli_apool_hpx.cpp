@@ -55,7 +55,9 @@ struct apool_
 	siz_t               def_array_len;
 };
 
-static apool_t sba;
+static apool_t sba{};
+
+apool_t * get_sba_ptr() { return &sba; };
 
 pool_t* bli_apool_pool( apool_t* apool )
 {

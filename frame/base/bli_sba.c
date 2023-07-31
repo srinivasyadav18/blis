@@ -36,27 +36,37 @@
 
 // Statically initialize the mutex within the small block allocator.
 // Note that the sba is an apool_t of array_t of pool_t.
-#ifndef BLIS_ENABLE_HPX
+#if !defined(BLIS_ENABLE_HPX)
 static apool_t sba = { .mutex = BLIS_PTHREAD_MUTEX_INITIALIZER };
-#else
-extern apool_t sba;
 #endif
 
 apool_t* bli_sba_query( void )
 {
+#if !defined(BLIS_ENABLE_HPX)
 	return &sba;
+#else
+        return get_sba_ptr();
+#endif
 }
 
 // -----------------------------------------------------------------------------
 
 void bli_sba_init( void )
 {
+#if !defined(BLIS_ENABLE_HPX)
 	bli_apool_init( &sba );
+#else
+	bli_apool_init( get_sba_ptr() );
+#endif
 }
 
 void bli_sba_finalize( void )
 {
+#if !defined(BLIS_ENABLE_HPX)
 	bli_apool_finalize( &sba );
+#else
+	bli_apool_finalize( get_sba_ptr() );
+#endif
 }
 
 void* bli_sba_acquire
@@ -162,7 +172,11 @@ array_t* bli_sba_checkout_array
      )
 {
 #ifdef BLIS_ENABLE_SBA_POOLS
+#if defined(BLIS_ENABLE_HPX)
+	return bli_apool_checkout_array( n_threads, get_sba_ptr() );
+#else
 	return bli_apool_checkout_array( n_threads, &sba );
+#endif
 #else
 	return NULL;
 #endif
@@ -174,7 +188,11 @@ void bli_sba_checkin_array
      )
 {
 #ifdef BLIS_ENABLE_SBA_POOLS
+#if defined(BLIS_ENABLE_HPX)
+	bli_apool_checkin_array( array, get_sba_ptr() );
+#else
 	bli_apool_checkin_array( array, &sba );
+#endif
 #else
 	return;
 #endif

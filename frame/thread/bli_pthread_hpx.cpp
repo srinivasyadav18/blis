@@ -328,6 +328,10 @@ int bli_pthread_switch_off
 	return r_val;
 }
 
+static bli_pthread_mutex_t gks_mutex;
+
+bli_pthread_mutex_t * get_gks_mutex_ptr() { return &gks_mutex; }
+
 #if defined(__cplusplus)
 }
 #endif

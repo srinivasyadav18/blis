@@ -76,7 +76,7 @@ struct pba_s
 
 };
 
-static pba_t global_pba{.mutex=std::make_shared<bli_pthread_mutex_t>()};
+pba_t global_pba{.mutex=std::make_shared<bli_pthread_mutex_t>()};
 
 pool_t* bli_pba_pool( dim_t pool_index, pba_t* pba )
 {

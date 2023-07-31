@@ -105,6 +105,9 @@ void bli_apool_free_block
        array_t* array
      );
 
+
+apool_t * get_sba_ptr();
+
 #if defined(__cplusplus)
 }
 #endif

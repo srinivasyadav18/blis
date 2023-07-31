@@ -33,7 +33,9 @@
 
 */
 
-#ifndef BLIS_PTHREAD_HPX_H
+#if !defined(BLIS_PTHREAD_HPX_H)
 #define BLIS_PTHREAD_HPX_H
+
+bli_pthread_mutex_t * get_gks_mutex_ptr();
 
 #endif // BLIS_PTHREAD_H
