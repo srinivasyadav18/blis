@@ -93,12 +93,10 @@ void bli_l3_ind_oper_set_enable( opid_t oper, ind_t method, num_t dt, bool statu
 	if ( method == BLIS_NAT ) return;
 
 	idt = bli_ind_map_cdt_to_index( dt );
-
-	// Acquire the mutex protecting bli_l3_ind_oper_st.
-        std::lock_guard sl(oper_st_mutex.m);
-
 	// BEGIN CRITICAL SECTION
 	{
+    	        // Acquire the mutex protecting bli_l3_ind_oper_st.
+                std::lock_guard sl(oper_st_mutex.m);
 		bli_l3_ind_oper_st[ method ][ oper ][ idt ] = status;
 	}
 	// END CRITICAL SECTION
