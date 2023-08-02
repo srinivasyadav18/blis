@@ -34,14 +34,16 @@
 
 #include "blis.h"
 
-#ifdef BLIS_ENABLE_HPX
+#if defined(BLIS_ENABLE_HPX)
 
 #include <hpx/execution.hpp>
 #include <hpx/parallel/algorithms/for_each.hpp>
 #include <hpx/hpx_start.hpp>
 
+#if defined(__cplusplus)
 extern "C"
 {
+#endif
 
 void bli_thread_launch_hpx
      (
@@ -80,6 +82,8 @@ int bli_thread_finalize_hpx()
 	return hpx::stop();
 }
 
+#if defined(__cplusplus)
 } // extern "C"
+#endif
 
 #endif

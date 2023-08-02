@@ -38,6 +38,10 @@
 // Definitions specific to situations when HPX multithreading is enabled.
 #ifdef BLIS_ENABLE_HPX
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 void bli_thread_launch_hpx
      (
              dim_t         nt,
@@ -48,6 +52,10 @@ void bli_thread_launch_hpx
 void bli_thread_initialize_hpx( int argc, char** argv );
 
 int bli_thread_finalize_hpx();
+
+#if defined(__cplusplus)
+}
+#endif
 
 #endif
 
