@@ -122,7 +122,7 @@ typedef void bli_pthread_barrierattr_t;
 #define BLIS_PTHREAD_ONCE_INIT         INIT_ONCE_STATIC_INIT
 #define BLIS_PTHREAD_COND_INITIALIZER  CONDITION_VARIABLE_INIT
 
-#elif // !defined(BLIS_DISABLE_SYSTEM) && !defined(_MSC_VER)
+#else // !defined(BLIS_DISABLE_SYSTEM) && !defined(_MSC_VER)
 
 #include <pthread.h>
 
