@@ -67,6 +67,14 @@ typedef struct barrier_s barrier_t;
 #endif
 #endif
 
+#ifdef BLIS_ENABLE_HPX
+
+typedef struct hpxc_barrier_t
+{
+  void* handle;
+} hpxc_barrier_t;
+#endif
+
 // Define the thrcomm_t structure, which will be common to all threading
 // implementations.
 
@@ -124,9 +132,7 @@ typedef struct thrcomm_s
 	// -- Fields specific to HPX --
 
 	#ifdef BLIS_ENABLE_HPX
-	#ifdef BLIS_USE_HPX_BARRIER
-	hpx::barrier<> * barrier;
-	#endif
+	hpxc_barrier_t barrier;
 	#endif
 
 } thrcomm_t;
